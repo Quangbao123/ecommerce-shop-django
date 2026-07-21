@@ -1,7 +1,6 @@
 from django import forms
 from .models import CustomUser
 from django.core.exceptions import ValidationError
-from django.core.validators import FileExtensionValidator
 
 class UserRegisterForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput, label='Password')
@@ -49,7 +48,7 @@ class UserRegisterForm(forms.ModelForm):
         if avatar:
             if avatar.size > 1024 * 1024:
                 raise ValidationError('File must be smaller than 1MB')
-            if not avatar.name.lower().endswitch(('.png', '.jpeg', '.jpg')):
+            if not avatar.name.lower().endswith(('.png', '.jpeg', '.jpg')):
                 raise ValidationError('File extension must have jpg, jpeg or png')
         return avatar
 

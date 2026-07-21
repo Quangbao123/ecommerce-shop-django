@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'backend',
+    'users',
+    'blog',
     'ckeditor',
     'ckeditor_uploader',
 ]
@@ -150,4 +151,4 @@ CKEDITOR_CONFIGS = {
     },
 }
 
-AUTH_USER_MODEL = 'backend.CustomUser'
+AUTH_USER_MODEL = 'users.CustomUser'

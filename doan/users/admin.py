@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CustomUser, Country, Blog
+from .models import CustomUser, Country
 
 # Register your models here.
 @admin.register(CustomUser)
@@ -8,6 +8,3 @@ class UserAdmin(admin.ModelAdmin):
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
-@admin.register(Blog)
-class BlogAdmin(admin.ModelAdmin):
-    list_display = ('title', 'description', 'image', 'author', 'created_at')
