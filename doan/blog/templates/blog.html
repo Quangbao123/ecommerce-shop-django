@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="col-sm-9">
+    <div class="blog-post-area">
+      <h2 class="title text-center">Latest From our Blog</h2>
+      {% for blog in page_obj %}
+        <div class="single-blog-post">
+          <h3>{{ blog.title }}</h3>
+          <div class="post-meta">
+            <ul>
+              <li>
+                <i class="fa fa-user"></i> Mac Doe
+              </li>
+              <li>
+                <i class="fa fa-clock-o"></i> 1:33 pm
+              </li>
+              <li>
+                <i class="fa fa-calendar"></i> DEC 5, 2013
+              </li>
+            </ul>
+            <span>
+              <i class="fa fa-star"></i>
+              <i class="fa fa-star"></i>
+              <i class="fa fa-star"></i>
+              <i class="fa fa-star"></i>
+              <i class="fa fa-star-half-o"></i>
+            </span>
+          </div>
+          <a href=""><img src="{{ blog.image.url }}" alt="{{ blog.title }}" /></a>
+          <p>{{ blog.description }}</p>
+          <a class="btn btn-primary" href="{% url 'blog_detail' blog.id %}">Read More</a>
+        </div>
+      {% endfor %}
+      <div class="pagination-area">
+        {% if page_obj.has_previous %}
+          <a href="?page=1" class="active">First</a>
+          <a href="?page={{ page_obj.previous_page_number }}" class="active"><</a>
+        {% endif %}
+
+        {% for num in pagnitor.page_range %}
+          {% if page_obj.number == num %}
+            <strong>{{ num }}</strong>
+          {% elif num > page_obj.number|add:'-2' and num < page_obj.number|add:'2' %}
+            <a href="?page={{ num }}">{{ num }}</a>
+          {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}">></a>
+          <a href="?page={{ pagnitor.num_pages }}"><i class="fa fa-angle-double-right">Last</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

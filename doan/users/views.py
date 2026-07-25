@@ -11,7 +11,7 @@ def register_view(request):
         form = UserRegisterForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password']) # 
+            user.set_password(form.cleaned_data['password'])
             
             # Permissions
             user.is_superuser = False
