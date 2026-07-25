@@ -12,6 +12,8 @@
     <link href="{% static 'css/prettyPhoto.css'%}" rel='stylesheet'/>
     <link href="{% static 'css/price-range.css'%}" rel='stylesheet'/>
     <link href="{% static 'css/responsive.css'%}" rel='stylesheet'/>
+    {% block style %}
+    {% endblock %}
 </head>
 <body>
     {% include 'header.html'%}
@@ -23,6 +25,9 @@
                 {% block content %}
 
                 
+
+                {% endblock %}
+                {% block scripts %}
 
                 {% endblock %}
             </div>
