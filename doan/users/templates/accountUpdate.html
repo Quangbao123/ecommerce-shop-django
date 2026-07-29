@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="col-sm-9">
+    <div class="blog-post-area">
+      <h2 class="title text-center">Update user</h2>
+      <div class="signup-form">
+        <!-- sign up form -->
+        <h2>User Update!</h2>
+        <form method="POST"  enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="text" name="username" placeholder="Name" value="{{ user_info.username }}"/>
+					<input type="email" name="email" placeholder="Email Address" value="{{ user_info.email }}"/>
+					<input type="password" name="password" placeholder="Password"/>
+          {% comment %} <input type="text" name="country" placeholder="Country" value="{{ user_info.id_country }}"/> {% endcomment %}
+          <select name="country">
+            {% for country in countries %}
+              <option value="{{ country.id }}" {% if country.id == user_info.id_country_id %} selected {% endif %}>
+                {{ country.name }}
+              </option>
+            {% endfor %}
+          </select>
+          <input type="text" name="first_name" placeholder="First name" value="{{ user_info.first_name }}"/>
+          <input type="text" name="last_name" placeholder="Last name" value="{{ user_info.last_name }}"/>
+          <input type="file" name="avatar" placeholder="Avatar"/>
+          <button type="submit" class="btn btn-default">Signup</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% block scripts %}
+<script>
+  
+</script>
+{% endblock %}
+{% endblock %}

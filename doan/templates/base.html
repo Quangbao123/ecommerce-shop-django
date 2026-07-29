@@ -12,24 +12,21 @@
     <link href="{% static 'css/prettyPhoto.css'%}" rel='stylesheet'/>
     <link href="{% static 'css/price-range.css'%}" rel='stylesheet'/>
     <link href="{% static 'css/responsive.css'%}" rel='stylesheet'/>
-    {% block style %}
-    {% endblock %}
+    {% block style %} {% endblock %}
 </head>
 <body>
     {% include 'header.html'%}
     <section>
         <div class='container'>
             <div class='row'>
-                {% include 'menuLeft.html' %}
+                {% if account_page %}
+                    {% include 'menuAccount.html' %}
+                {% else %}
+                    {% include 'menuLeft.html' %}
+                {% endif %}
 
-                {% block content %}
-
-                
-
-                {% endblock %}
-                {% block scripts %}
-
-                {% endblock %}
+                {% block content %} {% endblock %}
+                {% block scripts %} {% endblock %}
             </div>
         </div>
     </section>
