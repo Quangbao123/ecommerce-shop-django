@@ -50,21 +50,12 @@
         <li>
           <div class="rate">
             <div class="vote">
-              <div class="star_1 ratings_stars">
-                <input value="1" type="hidden" />
-              </div>
-              <div class="star_2 ratings_stars">
-                <input value="2" type="hidden" />
-              </div>
-              <div class="star_3 ratings_stars">
-                <input value="3" type="hidden" />
-              </div>
-              <div class="star_4 ratings_stars">
-                <input value="4" type="hidden" />
-              </div>
-              <div class="star_5 ratings_stars">
-                <input value="5" type="hidden" />
-              </div>
+              {% for i in stars %}
+                <div class="star_{{i}} ratings_stars">
+                  <input value="{{i}}" type="hidden" />
+                </div>
+              {% endfor %}
+              <span class="rate-np">{{ avg_rate }}</span>
             </div>
           </div>
         </li>
@@ -90,7 +81,7 @@
     </div>
     <!-- /socials-share -->
 
-    <!--   <div class="media commnets">
+    <!--    <div class="media commnets">
 						<a class="pull-left" href="#">
 							<img class="media-object" src="images/blog/man-one.jpg" alt="">
 						</a>
@@ -107,155 +98,45 @@
 								<a class="btn btn-primary" href="">Other Posts</a>
 							</div>
 						</div>
-					</div>   -->
+					</div>    -->
     <!-- Comments -->
     <div class="response-area">
       <h2>3 RESPONSES</h2>
       <ul class="media-list">
-        <li class="media">
-          <a class="pull-left" href="#"><img class="media-object" src="images/blog/man-two.jpg" alt="" /></a>
-          <div class="media-body">
-            <ul class="sinlge-post-meta">
-              <li>
-                <i class="fa fa-user"></i>Janis Gallagher
-              </li>
-              <li>
-                <i class="fa fa-clock-o"></i> 1:33 pm
-              </li>
-              <li>
-                <i class="fa fa-calendar"></i> DEC 5, 2013
-              </li>
+        {% for comment in comments %}
+          {% if comment.level == 0 %}
+          <li class="media">
+            <a class="pull-left" href="#"><img style="width: 100px; height: 100px;" class="media-object" src="{{ comment.id_user.avatar.url }}" alt="" /></a>
+            <div class="media-body">
+              <ul class="sinlge-post-meta">
+                <li><i class="fa fa-user"></i>{{ comment.user_name }}</li>
+                <li><i class="fa fa-clock-o"></i>{{ comment.created_at|date:"H:i" }}</li>
+                <li><i class="fa fa-calendar"></i>{{ comment.created_at|date:"d/m/Y" }}</li>
+              </ul>
+              <p>{{ comment.comment }}</p>
+              <button type="button" id="btn-reply" data-id="{{ comment.id }}" class="btn btn-primary" href=""><i class="fa fa-reply"></i>Replay</button>
+            </div>
+            <ul class="reply-list" id='reply-{{ comment.id }}'>
+            {% for reply in comments %}
+              {% if reply.level == comment.id %}
+                <li class="media second-media">
+                  <a class="pull-left" href="#"><img style="width: 100px; height: 100px;" class="media-object" src="{{ reply.id_user.avatar.url }}" alt="" /></a>
+                  <div class="media-body">
+                    <ul class="sinlge-post-meta">
+                      <li><i class="fa fa-user"></i>{{ reply.user_name }}</li>
+                      <li><i class="fa fa-clock-o"></i>{{ reply.created_at|date:"H:i" }}</li>
+                      <li><i class="fa fa-calendar"></i>{{ reply.created_at|date:"d/m/Y" }}</li>
+                    </ul>
+                    <p>{{ reply.comment }}</p>
+                    <button type="button" id="btn-reply" data-id="{{ reply.id }}" class="btn btn-primary" href=""><i class="fa fa-reply"></i>Replay</button>
+                  </div>
+                </li>
+              {% endif %}
+            {% endfor %}
             </ul>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            <a class="btn btn-primary" href=""><i class="fa fa-reply"></i>Replay</a>
-          </div>
-        </li>
-        <li class="media second-media">
-          <a class="pull-left" href="#"><img class="media-object" src="images/blog/man-three.jpg" alt="" /></a>
-          <div class="media-body">
-            <ul class="sinlge-post-meta">
-              <li>
-                <i class="fa fa-user"></i>Janis Gallagher
-              </li>
-              <li>
-                <i class="fa fa-clock-o"></i> 1:33 pm
-              </li>
-              <li>
-                <i class="fa fa-calendar"></i> DEC 5, 2013
-              </li>
-            </ul>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            <a class="btn btn-primary" href=""><i class="fa fa-reply"></i>Replay</a>
-          </div>
-        </li>
-        <li class="media second-media">
-          <a class="pull-left" href="#"><img class="media-object" src="images/blog/man-three.jpg" alt="" /></a>
-          <div class="media-body">
-            <ul class="sinlge-post-meta">
-              <li>
-                <i class="fa fa-user"></i>Janis Gallagher
-              </li>
-              <li>
-                <i class="fa fa-clock-o"></i> 1:33 pm
-              </li>
-              <li>
-                <i class="fa fa-calendar"></i> DEC 5, 2013
-              </li>
-            </ul>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            <a class="btn btn-primary" href=""><i class="fa fa-reply"></i>Replay</a>
-          </div>
-        </li>
-        <li class="media second-media">
-          <a class="pull-left" href="#"><img class="media-object" src="images/blog/man-three.jpg" alt="" /></a>
-          <div class="media-body">
-            <ul class="sinlge-post-meta">
-              <li>
-                <i class="fa fa-user"></i>Janis Gallagher
-              </li>
-              <li>
-                <i class="fa fa-clock-o"></i> 1:33 pm
-              </li>
-              <li>
-                <i class="fa fa-calendar"></i> DEC 5, 2013
-              </li>
-            </ul>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            <a class="btn btn-primary" href=""><i class="fa fa-reply"></i>Replay</a>
-          </div>
-        </li>
-        <li class="media">
-          <a class="pull-left" href="#"><img class="media-object" src="images/blog/man-four.jpg" alt="" /></a>
-          <div class="media-body">
-            <ul class="sinlge-post-meta">
-              <li>
-                <i class="fa fa-user"></i>Janis Gallagher
-              </li>
-              <li>
-                <i class="fa fa-clock-o"></i> 1:33 pm
-              </li>
-              <li>
-                <i class="fa fa-calendar"></i> DEC 5, 2013
-              </li>
-            </ul>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            <a class="btn btn-primary" href=""><i class="fa fa-reply"></i>Replay</a>
-          </div>
-        </li>
-        <li class="media second-media">
-          <a class="pull-left" href="#"><img class="media-object" src="images/blog/man-three.jpg" alt="" /></a>
-          <div class="media-body">
-            <ul class="sinlge-post-meta">
-              <li>
-                <i class="fa fa-user"></i>Janis Gallagher
-              </li>
-              <li>
-                <i class="fa fa-clock-o"></i> 1:33 pm
-              </li>
-              <li>
-                <i class="fa fa-calendar"></i> DEC 5, 2013
-              </li>
-            </ul>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            <a class="btn btn-primary" href=""><i class="fa fa-reply"></i>Replay</a>
-          </div>
-        </li>
-        <li class="media second-media">
-          <a class="pull-left" href="#"><img class="media-object" src="images/blog/man-three.jpg" alt="" /></a>
-          <div class="media-body">
-            <ul class="sinlge-post-meta">
-              <li>
-                <i class="fa fa-user"></i>Janis Gallagher
-              </li>
-              <li>
-                <i class="fa fa-clock-o"></i> 1:33 pm
-              </li>
-              <li>
-                <i class="fa fa-calendar"></i> DEC 5, 2013
-              </li>
-            </ul>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            <a class="btn btn-primary" href=""><i class="fa fa-reply"></i>Replay</a>
-          </div>
-        </li>
-        <li class="media second-media">
-          <a class="pull-left" href="#"><img class="media-object" src="images/blog/man-three.jpg" alt="" /></a>
-          <div class="media-body">
-            <ul class="sinlge-post-meta">
-              <li>
-                <i class="fa fa-user"></i>Janis Gallagher
-              </li>
-              <li>
-                <i class="fa fa-clock-o"></i> 1:33 pm
-              </li>
-              <li>
-                <i class="fa fa-calendar"></i> DEC 5, 2013
-              </li>
-            </ul>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            <a class="btn btn-primary" href=""><i class="fa fa-reply"></i>Replay</a>
-          </div>
-        </li>
+          </li>
+          {% endif %}       
+        {% endfor %}
       </ul>
     </div>
     <!-- /Response-area -->
@@ -269,8 +150,8 @@
               <label>Your Name</label>
             </div>
             <span>*</span>
-            <textarea name="message" rows="11"></textarea>
-            <a class="btn btn-primary" href="">post comment</a>
+            <textarea id="comment-content" name="comment" rows="11"></textarea>
+            <button type="button" id="btn-comment" class="btn btn-primary" href="">post comment</button>
           </div>
         </div>
       </div>
@@ -282,6 +163,16 @@
   <script src="{% static 'rate/js/jquery-1.9.1.min.js' %}"></script>
   <script>
     $(document).ready(function () {
+      var userRate = {{ user_rate }}
+      if(userRate){
+        $('.ratings_stars').each(function () {
+          var star = parseInt($(this).find('input').val());
+          if (star <= userRate) {
+            $(this).addClass('ratings_over');
+          }
+        });
+      }
+
       // Vote
       $('.ratings_stars').hover(
         // Handle the mouseover
@@ -298,7 +189,6 @@
         const blogId = {{ blog_detail.id }}
         if (is_login) {
           var rate = $(this).find('input').val()
-          alert(rate)
           if ($(this).hasClass('ratings_over')) {
             $('.ratings_stars').removeClass('ratings_over')
             $(this).prevAll().andSelf().addClass('ratings_over')
@@ -328,6 +218,69 @@
         else {
           alert("Please login first");
           window.location.href = "{% url 'user_login' %}";
+        }
+      })
+    })
+  </script>
+  <script>
+    let level = 0;
+    $(document).on('click', '#btn-reply', function(){
+      level = $(this).data('id');
+      $('.replay-box')[0].scrollIntoView({
+        behavior: "smooth"
+      });
+    })
+    $(document).ready(function() {
+      $('#btn-comment').click(function(e) {
+        e.preventDefault();
+        var is_login = {{ user.is_authenticated|yesno:"true,false" }};
+        const blog_id = {{ blog_detail.id }}
+        if(!is_login){
+          alert('Please login before posting comment');
+          window.location.href = "{% url 'user_login' %}";
+        }else{
+          var comment = $('#comment-content').val().trim();
+          if(comment === ''){
+            alert('Please write something');
+            return;
+          }
+          $.ajax({
+            type: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'X-CSRFToken': '{{ csrf_token }}'
+            },
+            url: '/ecomshop/blog/comment/',
+            data: {
+              blog_id: blog_id,
+              comment: comment,
+              level: level
+            },
+            success: function(data){
+              if(data.success){
+                var className = level == 0 ? "media" : "media second-media";
+                var newCommentHtml = `
+                  <li class="${className}">
+                    <a class="pull-left"><img style="width: 100px; height: 100px;" class="media-object" src="${ data.avatar }" alt="" /></a>
+                    <div class="media-body">
+                      <ul class="sinlge-post-meta">
+                        <li><i class="fa fa-user"></i>${ data.user_name }</li>
+                        <li><i class="fa fa-clock-o"></i>${ data.hour }</li>
+                        <li><i class="fa fa-calendar"></i>${ data.time}</li>
+                      </ul>
+                      <p>${ data.comment }</p>
+                      <button type="button" id="btn-reply" data-id="${ data.comment_id }" class="btn btn-primary" href=""><i class="fa fa-reply"></i>Replay</button>
+                    </div>
+                  </li>
+                `;
+                if(level===0)
+                  $('.media-list').append(newCommentHtml);
+                else
+                  $('#reply-'+level).append(newCommentHtml);
+                $('#comment-content').val('');
+              }
+            }
+          })
         }
       })
     })

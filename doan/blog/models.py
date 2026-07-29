@@ -16,3 +16,11 @@ class Rate(models.Model):
     id_blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
     id_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     rated_at = models.DateTimeField(auto_now_add=True)
+
+class Comment(models.Model):
+    comment = models.TextField()
+    id_blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
+    id_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user_name = models.CharField(max_length=200)
+    level = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
