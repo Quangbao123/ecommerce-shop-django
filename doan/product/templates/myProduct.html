@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="col-sm-9">
+    <div class="features_items"><!--features_items-->
+        <h2 class="title text-center">Manage Products</h2>
+        
+        <div class="table-responsive cart_info mb-4">
+            <table class="table table-condensed table-hover align-middle">
+                <thead>
+                    <tr class="cart_menu text-center">
+                        <td class="image" style="width: 15%;">Image</td>
+                        <td class="description" style="width: 40%;">Name</td>
+                        <td class="price" style="width: 20%;">Price</td>
+                        <td class="total text-center" style="width: 25%;">Action</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                        <tr>
+                            <td class="cart_product text-center py-2">
+                                <a href="#">
+                                    <img src="/media/products/{{ product.image_filenames.0 }}" alt="{{ product.name }}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px;" />
+                                </a>
+                            </td>
+                            <td class="cart_description">
+                                <h4 class="mb-0"><a href="#" style="color: #696763; font-size: 16px; font-weight: 600;">{{ product.name }}</a></h4>
+                            </td>
+                            <td class="cart_price">
+                                <p style="font-size: 16px; color: #FE980F; font-weight: bold; margin: 0;">${{ product.price }}</p>
+                            </td>
+                            <td class="cart_total text-center">
+                                <a href="#" class="btn btn-primary btn-sm me-1" style="background-color: #FE980F; border: none; padding: 5px 12px;">Edit</a>
+                                <a href="#" class="btn btn-danger btn-sm" style="background-color: #e74c3c; border: none; padding: 5px 12px;">Delete</a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center py-4">
+                                <p class="text-muted">No products found.</p>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Nút Add chuyển trang -->
+        <div class="text-end mb-4">
+            <button type="button" id="btn-add" class="btn btn-default" style="background-color: #FE980F; color: #fff; font-weight: bold; padding: 8px 20px; border-radius: 4px;">
+                <i class="fa fa-plus"></i> Add New Product
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const addbtn = document.getElementById('btn-add');
+    if (addbtn) {
+        addbtn.addEventListener('click', function(){
+            window.location.href = "{% url 'add_product' %}";
+        });
+    }
+</script>
+{% endblock %}

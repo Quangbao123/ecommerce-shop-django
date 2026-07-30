@@ -110,3 +110,12 @@ def add_product_view(request):
         'account_page': True
     })
     
+# ----------------- DISPLAY PRODUCT -----------------
+def display_product_view(request):
+    products = Product.objects.filter(id_user_id=request.user.id)
+    for product in products:
+        product.image_filenames = json.loads(product.image)
+    return render(request, 'myProduct.html', {
+        'products': products,
+        'account_page': True
+    })
