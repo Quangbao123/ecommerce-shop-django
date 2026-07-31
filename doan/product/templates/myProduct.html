@@ -17,7 +17,7 @@
                 </thead>
                 <tbody>
                     {% for product in products %}
-                        <tr>
+                        <tr id='product-row-{{ product.id }}'>
                             <td class="cart_product text-center py-2">
                                 <a href="#">
                                     <img src="/media/products/{{ product.image_filenames.0 }}" alt="{{ product.name }}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px;" />
@@ -27,11 +27,11 @@
                                 <h4 class="mb-0"><a href="#" style="color: #696763; font-size: 16px; font-weight: 600;">{{ product.name }}</a></h4>
                             </td>
                             <td class="cart_price">
-                                <p style="font-size: 16px; color: #FE980F; font-weight: bold; margin: 0;">${{ product.price }}</p>
+                                <p style="font-size: 16px; color: #FE980F; font-weight: bold; margin: 0;">${{ product.final_price }}</p>
                             </td>
                             <td class="cart_total text-center">
-                                <a href="#" class="btn btn-primary btn-sm me-1" style="background-color: #FE980F; border: none; padding: 5px 12px;">Edit</a>
-                                <a href="#" class="btn btn-danger btn-sm" style="background-color: #e74c3c; border: none; padding: 5px 12px;">Delete</a>
+                                <a href="{% url 'edit_product' product.id %}" class="btn btn-primary btn-sm me-1" style="background-color: #FE980F; border: none; padding: 5px 12px;">Edit</a>
+                                <button type="button" data-id='{{ product.id }}' data-url="{% url 'delete_product' product.id %}" class="btn btn-danger btn-sm btn-delete" style="background-color: #e74c3c; border: none; padding: 5px 12px;">Delete</button>
                             </td>
                         </tr>
                     {% empty %}
@@ -56,6 +56,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     const addbtn = document.getElementById('btn-add');
     if (addbtn) {
@@ -63,5 +64,28 @@
             window.location.href = "{% url 'add_product' %}";
         });
     }
+    $(document).ready(function(){
+        $('.btn-delete').click(function(e){
+            e.preventDefault();
+            const product_id = $(this).data('id');
+            const delete_url = $(this).data('url');
+            if (confirm('Are you sure?')){
+                $.ajax({
+                    url: delete_url,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRFToken': "{{ csrf_token }}"
+                    },
+                    success: function(data){
+                        $('#product-row-' + product_id).remove();
+                    },
+                    error: function(xhr){
+                        console.log(xhr.responseJSON.error);
+                    }
+                })
+            }
+        })
+        
+    })
 </script>
 {% endblock %}
