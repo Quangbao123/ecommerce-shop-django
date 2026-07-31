@@ -1,0 +1,137 @@
+{% extends 'base.html'%}
+{% block style %}
+<style>
+    small{
+        color: red
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="col-sm-9">
+    <div class="blog-post-area">
+      <h2 class="title text-center">Create New Product</h2>
+      <div class="signup-form">
+        <!-- sign up form -->
+        <h2>Edit Product!</h2>
+        <form method="POST" id='productAjax' enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="text" name="name" placeholder="Name" value="{{ product.name }}"/>
+            <small id='err-name'></small>
+
+		    <input type="number" name="price" placeholder="Price" value="{{product.price }}"/>
+            <small id='err-price'></small>
+
+            <select name="category" >
+                <option value="">Please choose category</option>
+                {% for cate in categories %}
+                    <option value="{{ cate.id }}" {% if cate.id == product.id_category_id %}selected{% endif %}>
+                        {{ cate.name }} 
+                    </option>
+                {% endfor %}
+            </select>
+            <small id='err-category'></small>
+
+            <select name="brand">
+                <option value="">Please choose brand</option>
+                {% for brand in brands %}
+                    <option value="{{ brand.id }}" {% if brand.id == product.id_brand_id %}selected{% endif %}>
+                        {{ brand.name }} 
+                    </option>
+                {% endfor %}
+            </select>
+            <small id='err-brand'></small>
+
+            <select name="status" id='status'>
+                <option value="0" {% if product.status == 0 %}selected{% endif %}>New</option>
+                <option value="1" {% if product.status == 1 %}selected{% endif %}>Sale</option>
+            </select>
+
+            <div id='sale-input' style="display: {% if product.status == 1 %}block{% else %}none{% endif %};">
+                <input type="text" name="sale" placeholder="0" value="{{ product.sale }}"/>
+                <small id='err-sale'></small>
+            </div>
+
+            <input type="text" name="company" placeholder="Company Profile" value="{{ product.company }}"/>
+            <small id='err-company'></small>
+
+            <input type="file" multiple name="image"/>
+            <ul style="display: flex; list-style: none; padding: 0; gap: 15px; flex-wrap: wrap;">
+                {% for image in product.image_filenames %}
+                    <li style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                        <img src="/media/products/{{ image }}" width="90" height="90" style="object-fit: cover; border-radius: 6px; border: 1px solid #ddd;" alt="Product Image"/>
+                        <input type="checkbox" name="hinhxoa[]" onchange="handleCheckbox(event)" value="{{ image }}" style="width: 20px; height: 20px; cursor: pointer;"/>
+                    </li>
+                {% endfor %}
+            </ul>
+            <small id='err-images'></small>
+
+            <textarea type="text" name="detail" placeholder="Detail">{{ product.detail }}</textarea>
+            <small id='err-detail'></small>
+
+            <button type="submit" class="btn btn-default">Edit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block scripts %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        let hinhXoaArr = [];
+        function handleCheckbox(e){
+            const value = e.target.value;
+            if(e.target.checked){
+                if(!hinhXoaArr.includes(value)){
+                    hinhXoaArr.push(value);
+                }else{
+                    hinhXoaArr = hinhXoaArr.filter(item => item != value);
+                }
+            }
+            console.log("Mảng ảnh cần xóa hiện tại:", hinhXoaArr);
+        }
+        $(document).ready(function(){
+            const status = document.getElementById('status');
+            const saleInput = document.getElementById('sale-input');
+            status.addEventListener('change', function(){
+                if(this.value == '1'){
+                    saleInput.style.display = 'block';
+                }else{
+                    saleInput.style.display = 'none';
+                }
+            });
+
+            $('form#productAjax').on('submit', function(e){
+                e.preventDefault();
+                const formData = new FormData(this);
+                hinhXoaArr.forEach(function(image){
+                    formData.append('hinhxoa[]', image);
+                })
+                $.ajax({
+                    url: "/ecomshop/account/edit-product/{{ product.id }}",
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRFToken': "{{ csrf_token }}"
+                    },
+                    success: function(data){
+                        if(data.success){
+                            alert('Update Successfully');
+                            window.location.reload();   
+                        }
+                    },
+                    error: function(xhr){
+                        if(xhr.responseJSON && xhr.responseJSON.errors){
+                            const errors = xhr.responseJSON.errors;
+                            $.each(errors, function(field, message){
+                                $('#err-'+field).text(message);
+                            });
+                        }
+                    }
+                })
+            })
+        })
+        
+    </script>
+{% endblock %}
