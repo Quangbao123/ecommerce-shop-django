@@ -257,3 +257,14 @@ def delete_product_view(request, id):
         product.delete()
         return JsonResponse({'success': True, 'status': 'success'})
     return JsonResponse({'success': False, 'status': 'error', 'message': 'Invalid Request'}, status=400)
+
+
+# ----------------- PRODUCT DETAIL -----------------
+def product_detail_view(request, id):
+    product = Product.objects.get(id=id)
+    product.image_filenames = json.loads(product.image)
+    sale = 1 if product.status == 0 else (100 - product.sale)/100
+    product.final_price = product.price * sale
+    return render(request, 'productDetail.html', {
+        'product': product
+    })
