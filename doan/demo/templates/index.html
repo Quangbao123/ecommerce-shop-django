@@ -423,6 +423,7 @@
           },
           success: function (data) {
             console.log(data)
+            $('#cart-count').text(data.cart_count);
             console.log({{cart}})
           }
         })

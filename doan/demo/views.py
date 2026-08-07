@@ -34,11 +34,67 @@ def add_to_cart_view(request, id):
 
         return JsonResponse({
             'success': True,
-            'status': 'success'
+            'status': 'success',
+            'cart_count': cart_count(cart)
         })
 
 # ----------------- VIEW PRODUCT CART -----------------
 def view_product_cart(request):
+    cart = request.session.get('cart', {})
+    for product in cart.values():
+        product['total_price'] = (
+            product['quantity'] * product['price']
+        )
     return render(request, 'cart.html', {
         'no_left': True
     })
+    
+# ----------------- UPDATE CART -----------------
+def update_cart_view(request, id):
+    cart = request.session.get('cart', {})
+    action = request.POST.get('action')
+    if str(id) not in cart:
+        return JsonResponse({
+            'success': False,
+            'message': 'Product not found'
+        })
+    product = cart[str(id)]
+    if action == 'up':
+        product['quantity'] += 1
+    elif action == 'down':
+        if product['quantity'] > 1:
+            product['quantity'] -= 1
+    request.session['cart'] = cart
+    request.session.modified = True
+    total = product['quantity'] * product['price']
+    return JsonResponse({
+        'success': True,
+        'quantity': product['quantity'],
+        'total': total,
+        'cart_count': cart_count(cart)
+    })
+
+# ----------------- DELETE CART -----------------
+def delete_product_cart_view(request, id):
+    cart = request.session.get('cart', {})
+    if str(id) in cart:
+        del cart[str(id)]
+        request.session['cart'] = cart
+        request.session.modified = True
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Product deleted',
+            'cart_count': cart_count(cart)
+        })
+    return JsonResponse({
+        'success': False,
+        'message': 'Product not found',
+    })
+
+def cart_count(cart):
+    return sum(item['quantity'] for item in cart.values())
+
+# ----------------- DISPLAY CHECKOUT -----------------
+def checkout_view(request):
+    return render(request, 'checkout.html')
