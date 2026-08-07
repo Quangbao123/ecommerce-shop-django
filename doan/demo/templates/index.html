@@ -4,36 +4,36 @@
     <div class="features_items">
       <!-- features_items -->
       <h2 class="title text-center">Features Items</h2>
-	    {% for product in products %}
-      <div class="col-sm-4">
-        <div class="product-image-wrapper">
-          <div class="single-products">
-            <div class="productinfo text-center">
-              <img src="/media/products/{{ product.image_filenames.0 }}" alt="{{ product.name }}" />
-              <h2>${{ product.price }}</h2>
-              <p>{{ product.name }}</p>
-              <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-            </div>
-            <div class="product-overlay">
-              <div class="overlay-content">
+      {% for product in products %}
+        <div class="col-sm-4">
+          <div class="product-image-wrapper">
+            <div class="single-products">
+              <div class="productinfo text-center">
+                <img src="/media/products/{{ product.image_filenames.0 }}" alt="{{ product.name }}" />
                 <h2>${{ product.price }}</h2>
                 <p>{{ product.name }}</p>
-                <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+                <a href="#" data-id="{{ product.id }}" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+              </div>
+              <div class="product-overlay">
+                <div class="overlay-content">
+                  <h2>${{ product.price }}</h2>
+                  <p>{{ product.name }}</p>
+                  <button type="button" data-id="{{ product.id }}" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</button>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="choose">
-            <ul class="nav nav-pills nav-justified">
-              <li>
-                <a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a>
-              </li>
-              <li>
-                <a href="{% url 'product_detail' product.id %}"><i class="fa fa-plus-square"></i>View detail</a>
-              </li>
-            </ul>
+            <div class="choose">
+              <ul class="nav nav-pills nav-justified">
+                <li>
+                  <a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a>
+                </li>
+                <li>
+                  <a href="{% url 'product_detail' product.id %}"><i class="fa fa-plus-square"></i>View detail</a>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
       {% endfor %}
     </div>
     <!-- features_items -->
@@ -407,4 +407,26 @@
     </div>
     <!-- /recommended_items -->
   </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('.add-to-cart').click(function () {
+        const product_id = $(this).data('id')
+        $.ajax({
+          url: '/ecomshop/add-to-cart/' + product_id,
+          type: 'POST',
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+          },
+          success: function (data) {
+            console.log(data)
+            console.log({{cart}})
+          }
+        })
+      })
+    })
+  </script>
 {% endblock %}

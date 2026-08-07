@@ -21,7 +21,7 @@
             <div class='row'>
                 {% if account_page %}
                     {% include 'menuAccount.html' %}
-                {% else %}
+                {% elif not no_left %}
                     {% include 'menuLeft.html' %}
                 {% endif %}
 

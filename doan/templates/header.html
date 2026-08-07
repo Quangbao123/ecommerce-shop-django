@@ -97,7 +97,7 @@
                   <a href="checkout.html"><i class="fa fa-crosshairs"></i> Checkout</a>
                 </li>
                 <li>
-                  <a href="cart.html"><i class="fa fa-shopping-cart"></i> Cart</a>
+                  <a href="{% url 'view_product_cart' %}" id='cart-header'><i class="fa fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a>
                 </li>
                 {% if user.is_authenticated %}
                   <li>
@@ -196,4 +196,19 @@
     </div>
     <!-- /header-bottom -->
   </header>
+{% endblock %}
+{% block scripts %}
+  {{ request.session.cart|default:"{}"|json_script:"cart-data" }}
+  <script>
+    const cart = JSON.parse(document.getElementById("cart-data").textContent);
+
+    let count = 0;
+    Object.values(cart).forEach(item => {
+      count += item.quantity;
+    });
+    
+    document.getElementById("cart-count").textContent = count;
+
+    console.log(count);
+  </script>
 {% endblock %}
