@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('ecomshop/', include('users.urls')),
-    path('ecomshop/', include('demo.urls')),
+    path('ecomshop/', include('cart.urls')),
     path('ecomshop/', include('blog.urls')),
     path('ecomshop/', include('product.urls')),
 ]

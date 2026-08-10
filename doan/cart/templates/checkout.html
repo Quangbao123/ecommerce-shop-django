@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% block content %}
+  <section id="cart_items">
+    <div class="container">
+      <div class="breadcrumbs">
+        <ol class="breadcrumb">
+          <li>
+            <a href="#">Home</a>
+          </li>
+          <li class="active">Check out</li>
+        </ol>
+      </div>
+      <!-- /breadcrums -->
+
+      <div class="step-one">
+        <h2 class="heading">Step1</h2>
+      </div>
+      <div class="checkout-options">
+        <h3>New User</h3>
+        <p>Checkout options</p>
+        <ul class="nav">
+          <li>
+            <label><input type="checkbox" />Register Account</label>
+          </li>
+          <li>
+            <label><input type="checkbox" />Guest Checkout</label>
+          </li>
+          <li>
+            <a href=""><i class="fa fa-times"></i>Cancel</a>
+          </li>
+        </ul>
+      </div>
+      <!-- /checkout-options -->
+
+      <div class="register-req">
+        <p>Please use Register And Checkout to easily get access to your order history, or use Checkout as Guest</p>
+      </div>
+      <!-- /register-req -->
+      {% if not user.is_authenticated %}
+      <div class="shopper-informations">
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="shopper-info">
+              <p>Shopper Information</p>
+              <form>
+                <input type="text" placeholder="Display Name" />
+                <input type="text" placeholder="User Name" />
+                <input type="password" placeholder="Password" />
+                <input type="password" placeholder="Confirm password" />
+              </form>
+              <a class="btn btn-primary" href="">Get Quotes</a>
+              <a class="btn btn-primary" href="">Continue</a>
+            </div>
+          </div>
+          <div class="col-sm-5 clearfix">
+            <div class="signup-form">
+              <p>Register</p>
+              <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{form.as_p}}
+                <button type="submit" class="btn btn-default">Signup</button>
+              </form>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="order-message">
+              <p>Shipping Order</p>
+              <textarea name="message" placeholder="Notes about your order, Special Notes for Delivery" rows="16"></textarea>
+              <label><input type="checkbox" />Shipping to bill address</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if user.is_authenticated %}
+        <a class="btn btn-default update" href="#" id='order-btn'>Order</a>
+      {% endif %}
+
+      <div class="review-payment">
+        <h2>Review & Payment</h2>
+      </div>
+      <div class="table-responsive cart_info">
+        <table class="table table-condensed">
+          <thead>
+            <tr class="cart_menu">
+              <td class="image">Item</td>
+              <td class="description"></td>
+              <td class="price">Price</td>
+              <td class="quantity">Quantity</td>
+              <td class="total">Total</td>
+            </tr>
+          </thead>
+          <tbody>
+            {% for id, product in request.session.cart.items %}
+              <tr>
+                <td class="cart_product">
+                  <a href=""><img src="/media/products/{{ product.image }}" style="width: 100px; height: 100px;" alt="{{ product.name }}" /></a>
+                </td>
+                <td class="cart_description">
+                  <h4><a href="">{{ product.name }}</a></h4>
+                  <p>Web ID: {{ product.id }}</p>
+                </td>
+                <td class="cart_price">
+                  <p>${{ product.price }}</p>
+                </td>
+                <td class="cart_quantity">
+                  <div class="cart_quantity_button">
+                    <input class="cart_quantity_input" type="text" name="quantity" value="{{ product.quantity }}" readonly='True' autocomplete="off" size="2" />
+                  </div>
+                </td>
+                <td class="cart_total">
+                  <p class="cart_total_price">${{ product.total_price }}</p>
+                </td>
+              </tr>
+            {% endfor %}
+            <tr>
+							<td colspan="4">&nbsp;</td>
+							<td colspan="2">
+								<table class="table table-condensed total-result">
+									<tr>
+										<td>Cart Sub Total</td>
+										<td id='cart-sub-total'>$0</td>
+									</tr>
+									<tr>
+										<td>Exo Tax</td>
+										<td id='cart-tax'>$0</td>
+									</tr>
+									<tr class="shipping-cost">
+										<td>Shipping Cost</td>
+										<td>Free</td>										
+									</tr>
+									<tr>
+										<td>Total</td>
+										<td><span id='cart-total'>$0</span></td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="payment-options">
+        <span><label><input type="checkbox" />Direct Bank Transfer</label></span>
+        <span><label><input type="checkbox" />Check Payment</label></span>
+        <span><label><input type="checkbox" />Paypal</label></span>
+      </div>
+    </div>
+  </section> <!-- /#cart_items -->
+{% endblock %}
+{% block scripts %}
+  {{ request.session.cart|default:"{}"|json_script:"cart-data" }}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function(){
+      const cart = JSON.parse(document.getElementById("cart-data").textContent);
+      let cartSubTotal = 0;
+      Object.values(cart).forEach(item => {
+        cartSubTotal += item.total_price;
+      });
+      document.getElementById('cart-sub-total').textContent = '$' + cartSubTotal;
+      document.getElementById('cart-total').textContent = '$' + cartSubTotal;
+
+      $('#order-btn').click(function(e){
+        e.preventDefault();
+        $.ajax({
+          url: "{% url 'order' %}",
+          type: 'POST',
+          headers: {
+            "X-CSRFToken": "{{ csrf_token }}"
+          },
+          success: function(data){
+            if(data.success){
+              alert(data.message);
+              window.location.href = "{% url 'home' %}";
+            }
+          }
+        })
+      })
+    })
+  </script>
+{% endblock %}

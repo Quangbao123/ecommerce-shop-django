@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'users',
     'blog',
     'product',
-    'demo',
+    'cart',
     'ckeditor',
     'ckeditor_uploader',
 ]
@@ -154,3 +154,13 @@ CKEDITOR_CONFIGS = {
 }
 
 AUTH_USER_MODEL = 'users.CustomUser'
+
+# Config Email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'youremail@gmail.com'
+EMAIL_HOST_PASSWORD = 'hewy esjt tnhp acrf'  # Phải dùng App Password
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

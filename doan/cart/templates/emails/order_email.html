@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Order Confirmation</title>
+  </head>
+
+  <body>
+    <h2>Xin chào {{ user.get_full_name|default:user.username }}</h2>
+
+    <p>Cảm ơn bạn đã mua hàng tại website.</p>
+
+    <h3>Thông tin đơn hàng</h3>
+
+    <table border="1" cellpadding="10" cellspacing="0">
+      <thead>
+        <tr>
+          <td class="image">Item</td>
+          <td class="price">Price</td>
+          <td class="quantity">Quantity</td>
+          <td class="total">Total</td>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for id, product in cart.items %}
+          <tr>
+            <td>{{ product.name }}</td>
+            <td>${{ product.price }}</td>
+            <td>{{ product.quantity }}</td>
+            <td>${{ product.total_price }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h3>Tổng tiền: ${{ total_price }}</h3>
+
+    <p>Email: {{ user.email }}</p>
+
+    <p>Cảm ơn bạn đã mua hàng!</p>
+  </body>
+</html>

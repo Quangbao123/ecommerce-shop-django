@@ -26,7 +26,7 @@
               {% for id,product in request.session.cart.items %}
               <tr>
                 <td class="cart_product">
-                  <a href=""><img src="/media/products/{{ product.image }}" style="display: 100px; height: 100px;" alt="{{ product.name }}" /></a>
+                  <a href=""><img src="/media/products/{{ product.image }}" style="width: 100px; height: 100px;" alt="{{ product.name }}" /></a>
                 </td>
                 <td class="cart_description">
                   <h4><a href="">{{ product.name }}</a></h4>
