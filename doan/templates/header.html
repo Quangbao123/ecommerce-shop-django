@@ -183,12 +183,20 @@
                 <li>
                   <a href="contact-us.html">Contact</a>
                 </li>
+                <li>
+                  <a href="{% url 'search_ajax' %}">Search ajax</a>
+                </li>
+                <li>
+                  <a href="{% url 'search_reload' %}">Search reload</a>
+                </li>
               </ul>
             </div>
           </div>
           <div class="col-sm-3">
             <div class="search_box pull-right">
-              <input type="text" placeholder="Search" />
+              <form method='GET' id='search-form' action="{% url 'product_search' %}">
+                <input id='search-input' type="text" name='q' placeholder="Search" value='{{ request.GET.q }}'/>
+              </form>
             </div>
           </div>
         </div>

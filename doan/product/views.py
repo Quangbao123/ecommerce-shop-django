@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import Brand, Category, Product
 from django.conf import settings
+from django.template.loader import render_to_string
 import os, json
 from django.http import JsonResponse
 from PIL import Image
@@ -267,4 +268,111 @@ def product_detail_view(request, id):
     product.final_price = product.price * sale
     return render(request, 'productDetail.html', {
         'product': product
+    })
+    
+# ----------------- SEARCH PRODUCT -----------------
+def search_view(request):
+    query = request.GET.get('q', '').strip()
+    products = Product.objects.all()
+    if query:
+        products = products.filter(name__icontains=query)
+    for product in products:
+        product.image_filenames = json.loads(product.image)
+        if product.status == 1 and product.sale > 0:
+            product.final_price = product.price * (100 - product.sale)/100
+        else:
+            product.final_price = product.price
+    return render(request, 'productList.html', {
+        'products': products
+    })
+
+def searchAjax_view(request):
+    brands = Brand.objects.all()
+    categories = Category.objects.all()
+    products = Product.objects.all()
+            
+    name = request.GET.get('name', '').strip()
+    price = request.GET.get('price', '').strip()
+    category = request.GET.get('category', '')
+    brand = request.GET.get('brand', '')
+    status = request.GET.get('status', '')
+    
+    if name:
+        products = products.filter(name__icontains=name)
+        
+    if category:
+        products = products.filter(id_category_id=category)
+        
+    if brand:
+        products = products.filter(id_brand_id=brand)
+    
+    if status != '' and status is not None:
+        products = products.filter(status=status)
+        
+    product_list = []
+    for product in products:
+        product.image_filenames = json.loads(product.image)
+
+        if str(product.status) == '1' and product.sale > 0:
+            product.final_price = product.price * (100 - product.sale)/100
+        else:
+            product.final_price = product.price
+            
+        if price:
+            min_p, max_p = map(int, price.split('-'))
+            if not (min_p <= product.final_price <= max_p):
+                continue
+        product_list.append(product)
+        
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.GET.get('ajax') == '1':
+        html = render_to_string('product_list_ajax.html', {'products': product_list}, request=request)
+        return JsonResponse({'html': html})
+    
+    return render(request, 'searchAjax.html', {
+        'brands': brands,
+        'categories': categories,
+        'products': product_list
+    })
+
+def searchReload_view(request):
+    brands = Brand.objects.all()
+    categories = Category.objects.all()
+    products = Product.objects.all()
+    
+    name = request.GET.get('name', '').strip()
+    price = request.GET.get('price', '').strip()
+    category = request.GET.get('category', '')
+    brand = request.GET.get('brand', '')
+    status = request.GET.get('status', '')
+    
+    if name:
+        products = products.filter(name__icontains=name)
+        
+    if category:
+        products = products.filter(id_category_id=category)
+        
+    if brand:
+        products = products.filter(id_brand_id=brand)
+    
+    if status != '' and status is not None:
+        products = products.filter(status=status)
+        
+    product_list = []
+    for product in products:
+        product.image_filenames = json.loads(product.image)
+        if str(product.status) == '1' and product.sale > 0:
+            product.final_price = product.price * (100 - product.sale)/100
+        else:
+            product.final_price = product.price
+            
+        if price:
+            min_p, max_p = map(int, price.split('-'))
+            if not (min_p <= product.final_price <= max_p):
+                continue
+        product_list.append(product)
+    
+    return render(request, 'searchReload.html', {
+        'brands': brands,
+        'categories': categories,
+        'products': product_list
     })
