@@ -376,3 +376,31 @@ def searchReload_view(request):
         'categories': categories,
         'products': product_list
     })
+    
+# Price Range
+def price_range_view(request):
+    products = Product.objects.all()
+    
+    min_price = int(request.GET.get('min_price'))
+    max_price = int(request.GET.get('max_price'))
+
+    product_list = []    
+    for product in products:
+        product.image_filenames = json.loads(product.image)
+        if product.status == 1 and product.sale > 0:
+            product.final_price = product.price * (100 - product.sale)/100
+        else:
+            product.final_price = product.price
+
+        if not (min_price <= product.final_price <= max_price):
+            continue
+        product_list.append(product)
+    
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html = render_to_string('product_list_ajax.html', {'products': product_list}, request=request)
+        return JsonResponse({'html': html})
+    
+    return render(request, 'index.html', {
+        'products': product_list
+    })
+        

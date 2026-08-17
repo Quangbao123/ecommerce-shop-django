@@ -4,7 +4,7 @@
     <div class="features_items">
       <!-- features_items -->
       <h2 class="title text-center">Features Items</h2>
-      {% for product in products %}
+      {% comment %} {% for product in products %}
         <div class="col-sm-4">
           <div class="product-image-wrapper">
             <div class="single-products">
@@ -34,7 +34,10 @@
             </div>
           </div>
         </div>
-      {% endfor %}
+      {% endfor %} {% endcomment %}
+      <div id='product-list'>
+        {% include 'product_list_ajax.html' %}
+      </div>
     </div>
     <!-- features_items -->
 

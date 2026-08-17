@@ -14,6 +14,10 @@ def home_view(request):
     products = Product.objects.all()
     for product in products:
         product.image_filenames = json.loads(product.image)
+        if product.status == 1 and product.sale > 0:
+            product.final_price = product.price * (100 - product.sale)/100
+        else:
+            product.final_price = product.price
     return render(request, 'index.html', {'products': products})
 
 # ----------------- ADD PRODUCT TO CART -----------------

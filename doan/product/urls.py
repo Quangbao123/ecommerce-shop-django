@@ -10,4 +10,5 @@ urlpatterns=[
     path('product/search/', views.search_view, name='product_search'),
     path('products/search_ajax', views.searchAjax_view, name='search_ajax'),
     path('products/search_reload', views.searchReload_view, name='search_reload'),
+    path('products/price_range', views.price_range_view, name='price_range'),
 ]

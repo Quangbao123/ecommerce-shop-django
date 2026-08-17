@@ -186,8 +186,8 @@
         <!-- price-range -->
         <h2>Price Range</h2>
         <div class="well text-center">
-          <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="600" data-slider-step="5" data-slider-value="[250,450]" id="sl2" /><br />
-          <b class="pull-left">$ 0</b> <b class="pull-right">$ 600</b>
+          <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="3000" data-slider-step="5" data-slider-value="[0,3000]" id="sl2" /><br />
+          <b class="pull-left">$ 0</b> <b class="pull-right">$ 3000</b>
         </div>
       </div>
       <!-- /price-range -->
@@ -199,4 +199,31 @@
       <!-- /shipping -->
     </div>
   </div>
+{% endblock %}
+{% block scripts %}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function(){
+      $('#sl2').on('slide', function(e){
+        let min_price = e.value[0];
+        let max_price = e.value[1];
+        console.log(min_price, max_price);
+
+        $.ajax({
+          url: "{% url 'price_range' %}",
+          type: 'GET',
+          data: {
+            min_price: min_price,
+            max_price: max_price
+          },
+          headers:{
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          success: function(data){
+            $('#product-list').html(data.html);
+          }
+        })
+      })
+    })
+  </script>
 {% endblock %}
