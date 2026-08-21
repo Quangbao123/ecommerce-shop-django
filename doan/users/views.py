@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from .forms import UserRegisterForm
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import AuthenticationForm
-from .models import Country
-from django.core.exceptions import ValidationError
+from .models import Country, CustomUser
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
 
 # Create your views here.
 # ----------------- REGISTER -----------------
@@ -84,4 +85,36 @@ def update_account_view(request):
         "countries": countries,
         "account_page": True
     })
-            
+
+# ----------------- FORGOT PASS -----------------
+def forgot_pass_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        if email:
+            user = CustomUser.objects.filter(email=email).first()
+            if user:
+                send_email(user)
+    return render(request, 'forgotPass.html')
+
+def send_email(user):
+    subject = 'Forgot Password'
+    from_email = settings.DEFAULT_FROM_EMAIL
+    to = [user.email]
+    url = f'http://127.0.0.1:8000/ecomshop/renew-pass/?email={user.email}'
+    text_content = f'Please enter the link below to create new password {url}'
+    msg = EmailMultiAlternatives(subject, text_content, from_email, to)
+    msg.send()
+
+def renew_password_view(request):
+    if request.method == 'POST':
+        new_pass = request.POST.get('password')
+        email = request.POST.get('email')
+        user = CustomUser.objects.filter(email=email).first()
+        if user and new_pass:
+            user.set_password(new_pass)
+            user.save()
+            return redirect('user_login')
+    email = request.GET.get('email')
+    return render(request, 'newPassword.html', {
+        "email": email
+    })
